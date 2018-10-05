@@ -1,0 +1,130 @@
+html, body {
+    background-color: #343640;
+}
+
+html, body, div, a, form {
+    padding: 0;
+    margin: 0;
+}
+
+#content {
+    margin: 30px auto 139px auto;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.content-panel {
+    border-radius: 6px;
+    margin-top: 30px;
+    color: #91949d;
+    overflow: hidden;
+    border-collapse: separate;
+}
+
+.content-panel > .text {
+    padding-top: 1em;
+    padding-bottom: 1.5em;
+}
+
+.content-panel > div  {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.content-panel > div, .content-panel > ul > li {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+form {
+    display: inline-block;
+}
+
+input, input:focus {
+    background: 0;
+    border: 0;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'PT Sans';
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    outline: none 0;
+}
+
+nav, .query-description, .ligand-description {
+    width: 255px;
+}
+
+.ligand-description .ngl-instance {
+    width: 255px;
+    height: 255px;
+    padding: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    display: block;
+}
+
+li {
+    display: list-item;
+    position: relative;
+    margin-top: 1px;
+}
+
+li > a, li > span {
+    display: block;
+    padding: 0 20px;
+    height: 48px;
+    line-height: 48px;
+    color: #ffffff;
+}
+
+form > input {
+    color: #ffffff;
+}
+
+li:hover, li.active {
+    background-color: #f64c3f !important;
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+a, a:active, a:hover, a:visited {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.highlight-color {
+    color: #f64c3f;
+}
+
+.neutral-color {
+    color: #ffffff;
+}
+
+.highlight-background {
+    background-color: #f64c3f;
+}
+
+.neutral-background {
+    background-color: #ffffff;
+}
+
+.highlight-border {
+    border-color: #f64c3f;
+}
+
+.highlight-border {
+    border-color: #ffffff;
+}

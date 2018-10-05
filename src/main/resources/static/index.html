@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <base href="/">
+
+        <title>ligand explorer</title>
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic" media="screen" rel="stylesheet" type="text/css">
+
+        <link rel="stylesheet" href="app.css">
+    </head>
+    <body data-ng-app="le" data-ng-controller="ViewController as view">
+        <div id="content">
+            <nav class="content-panel">
+                <div class="text">
+                    <h1 class="neutral-color">ligand explorer</h1>
+
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                </div>
+
+                <ul id="navigation">
+                    <li>
+                        <a href="#" id="home"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
+                    </li>
+                    <li>
+                        <span id="search"><i class="fa fa-search" aria-hidden="true"></i>
+                            <form action="#" id="search-form" method="get">
+                                <input id="search-field" name="query" onblur="if (this.value === '') {this.value = 'Search';}" onfocus="if (this.value === 'Search') {this.value = '';}" type="text" value="Search">
+                            </form>
+                        </span>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="content-panel query-description">
+                <div class="text">
+                    <h1 class="neutral-color">Query</h1>
+
+                    Query for ligands with {{::query.queryType}} '{{::query.query}}'.
+                    <span class="highlight-color" title="{{::query.ligands}}">{{::query.numberOfLigands}} ligands</span> matched.
+                </div>
+            </div>
+
+            <div class="content-panel ligand-description" data-ng-repeat="ligand in ::query.ligands" data-ng-controller="LigandController">
+                <div class="ngl-instance" id="ngl-{{::ligand.id}}"></div>
+                <div class="text">
+                    <h1 class="neutral-color">{{::ligand.id}}</h1>
+
+                    <div>{{::ligand.name}}</div>
+                    <div>Present in <span class="highlight-color" title="{{::ligand.pdbIds}}">{{::ligand.numberOfStructures}} structures</span>.</div>
+                </div>
+            </div>
+
+            <div class="content-panel structure-description" data-ng-repeat="structure in ::query.structures">
+
+            </div>
+        </div>
+
+        <div></div>
+
+        <script src="//code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-route.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="app.js"></script>
+        <script src="ngl.js"></script>
+
+        <div id="viewport" style="width:400px; height:300px;"></div>
+    </body>
+</html>
