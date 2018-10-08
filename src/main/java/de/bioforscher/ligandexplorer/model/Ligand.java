@@ -2,7 +2,7 @@ package de.bioforscher.ligandexplorer.model;
 
 import java.util.List;
 
-public class Ligand {
+public class Ligand implements NGLRenderable {
     private final String id;
     private final String name;
     private final int numberOfStructures;
@@ -32,6 +32,7 @@ public class Ligand {
         return numberOfStructures;
     }
 
+    @Override
     public String getPdbRepresentation() {
         return pdbRepresentation;
     }

@@ -1,5 +1,6 @@
 html, body {
     background-color: #343640;
+    height: 100%;
 }
 
 html, body, div, a, form {
@@ -8,7 +9,8 @@ html, body, div, a, form {
 }
 
 #content {
-    margin: 30px auto 139px auto;
+    margin: 0 auto;
+    width: 95%;
     font-family: 'PT Sans', sans-serif;
     font-size: 14px;
     line-height: 1.5;
@@ -17,49 +19,50 @@ html, body, div, a, form {
 
 .content-panel {
     border-radius: 6px;
-    margin-top: 30px;
-    color: #91949d;
+    margin: 30px 0;
     overflow: hidden;
     border-collapse: separate;
+    box-sizing: border-box;
 }
 
 .content-panel > .text {
-    padding-top: 1em;
-    padding-bottom: 1.5em;
+    padding: 1em 20px 1.5em;
 }
 
-.content-panel > div  {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.content-panel > div, .content-panel > ul > li {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-form {
-    display: inline-block;
-}
-
-input, input:focus {
-    background: 0;
-    border: 0;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: 'PT Sans';
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    outline: none 0;
+nav > div, nav > ul > li, .query-description > div {
+    background-color: #1a1b20;
+    color: #91949d;
 }
 
 nav, .query-description, .ligand-description {
     width: 255px;
 }
 
-.ligand-description .ngl-instance {
-    width: 255px;
-    height: 255px;
+.structure-description {
+    width: 540px;
+}
+
+.ngl-instance {
     padding: 0;
+    width: 100%;
+}
+
+.ligand-description .ngl-instance {
+    height: 255px;
+    width: 255px;
+}
+
+.structure-description .ngl-instance {
+    height: 540px;
+    width: 540px;
+}
+
+.ligand-description, .structure-description {
+    background-color: #ffffff;
+}
+
+.ligand-description > h1, .structure-description > h1 {
+    color: #1a1c21;
 }
 
 ul {
@@ -127,4 +130,19 @@ a, a:active, a:hover, a:visited {
 
 .highlight-border {
     border-color: #ffffff;
+}
+
+form {
+    display: inline-block;
+}
+
+input, input:focus {
+    background: 0;
+    border: 0;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'PT Sans';
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    outline: none 0;
 }

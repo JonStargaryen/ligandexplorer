@@ -48,15 +48,20 @@
             <div class="content-panel ligand-description" data-ng-repeat="ligand in ::query.ligands" data-ng-controller="LigandController">
                 <div class="ngl-instance" id="ngl-{{::ligand.id}}"></div>
                 <div class="text">
-                    <h1 class="neutral-color">{{::ligand.id}}</h1>
+                    <h1>{{::ligand.id}}</h1>
 
                     <div>{{::ligand.name}}</div>
                     <div>Present in <span class="highlight-color" title="{{::ligand.pdbIds}}">{{::ligand.numberOfStructures}} structures</span>.</div>
                 </div>
             </div>
 
-            <div class="content-panel structure-description" data-ng-repeat="structure in ::query.structures">
+            <div class="content-panel structure-description" data-ng-repeat="hit in hits  | limitTo : 5" data-ng-controller="StructureController">
+                <div class="ngl-instance" id="ngl-{{::hit.id.pdbId}}-{{::hit.id.ligandId}}-{{::hit.id.chainId}}-{{::hit.id.residueNumber}}"></div>
+                <div class="text">
+                    <h1>{{::hit.id.pdbId}}:{{::hit.id.ligandId}}:{{::hit.id.chainId}}:{{::hit.id.residueNumber}}</h1>
 
+                    <div>{{::hit.name}}</div>
+                </div>
             </div>
         </div>
 
@@ -68,7 +73,5 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="app.js"></script>
         <script src="ngl.js"></script>
-
-        <div id="viewport" style="width:400px; height:300px;"></div>
     </body>
 </html>

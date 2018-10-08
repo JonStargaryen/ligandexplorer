@@ -1,6 +1,7 @@
 package de.bioforscher.ligandexplorer.api;
 
 import de.bioforscher.ligandexplorer.model.Query;
+import de.bioforscher.ligandexplorer.model.Cluster;
 import de.bioforscher.ligandexplorer.service.ExplorerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +20,13 @@ public class ExplorerController {
     }
 
     @RequestMapping(value = "/query/{query}", method = RequestMethod.GET)
-    public Query getQuery(@PathVariable("query") String query) {
+    public Query getQuery(@PathVariable String query) {
         return explorerService.getQuery(query);
+    }
+
+    @RequestMapping(value= "/structure/{query}/{pdbId}", method = RequestMethod.GET)
+    public Cluster getStructure(@PathVariable String query, @PathVariable String pdbId) {
+        return explorerService.getStructure(query, pdbId);
     }
 }
 

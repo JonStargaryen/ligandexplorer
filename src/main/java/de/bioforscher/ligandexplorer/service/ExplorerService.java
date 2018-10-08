@@ -1,7 +1,11 @@
 package de.bioforscher.ligandexplorer.service;
 
+import de.bioforscher.jstructure.model.structure.Structure;
+import de.bioforscher.jstructure.model.structure.StructureParser;
+import de.bioforscher.ligandexplorer.model.Cluster;
 import de.bioforscher.ligandexplorer.model.Ligand;
 import de.bioforscher.ligandexplorer.model.Query;
+import de.bioforscher.ligandexplorer.model.StructureIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,5 +140,26 @@ public class ExplorerService {
                 name,
                 pdbRepresentation,
                 pdbIds);
+    }
+
+    public Cluster getStructure(String query,
+                                String pdbId) {
+        // parse PDB structure
+        Structure structure = StructureParser.fromPdbId(pdbId).parse();
+
+        // extract position of ligands
+        List<StructureIdentifier> structureIdentifiers = structure.select()
+                .ligands()
+                .groupName(query)
+                .asFilteredGroups()
+                .map(group -> new StructureIdentifier(pdbId,
+                        query,
+                        group.getParentChain().getChainIdentifier().getChainId(),
+                        group.getResidueIdentifier().getResidueNumber()))
+                .collect(Collectors.toList());
+
+        return new Cluster(structureIdentifiers,
+                structure.getTitle(),
+                structure.getPdbRepresentation());
     }
 }
