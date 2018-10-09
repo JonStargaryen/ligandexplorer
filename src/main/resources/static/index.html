@@ -55,12 +55,12 @@
                 </div>
             </div>
 
-            <div class="content-panel structure-description" data-ng-repeat="hit in hits  | limitTo : 5" data-ng-controller="StructureController">
-                <div class="ngl-instance" id="ngl-{{::hit.id.pdbId}}-{{::hit.id.ligandId}}-{{::hit.id.chainId}}-{{::hit.id.residueNumber}}"></div>
+            <div class="content-panel cluster-description" data-ng-repeat="cluster in clusters" data-ng-controller="ClusterController">
+                <div class="ngl-instance" id="ngl-cluster-{{::cluster.id}}"></div>
                 <div class="text">
-                    <h1>{{::hit.id.pdbId}}:{{::hit.id.ligandId}}:{{::hit.id.chainId}}:{{::hit.id.residueNumber}}</h1>
+                    <h1>Cluster #{{::cluster.id}}</h1>
 
-                    <div>{{::hit.name}}</div>
+                    <div>{{::cluster.structureIdentifiers}}</div>
                 </div>
             </div>
         </div>

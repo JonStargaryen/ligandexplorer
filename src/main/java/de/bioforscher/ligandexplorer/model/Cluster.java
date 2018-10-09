@@ -3,20 +3,20 @@ package de.bioforscher.ligandexplorer.model;
 import java.util.List;
 
 public class Cluster implements NGLRenderable {
+    private final String id;
     private final List<StructureIdentifier> structureIdentifiers;
-    private final String name;
     private final String pdbRepresentation;
 
-    public Cluster(List<StructureIdentifier> structureIdentifiers,
-                   String name,
+    public Cluster(String id,
+                   List<StructureIdentifier> structureIdentifiers,
                    String pdbRepresentation) {
+        this.id = id;
         this.structureIdentifiers = structureIdentifiers;
-        this.name = name;
         this.pdbRepresentation = pdbRepresentation;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public List<StructureIdentifier> getStructureIdentifiers() {

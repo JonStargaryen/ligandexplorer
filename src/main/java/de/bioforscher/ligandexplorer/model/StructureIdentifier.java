@@ -4,16 +4,19 @@ public class StructureIdentifier {
     private final String pdbId;
     private final String ligandId;
     private final String chainId;
-    private final int residueNumber;
+    private final String residueNumber;
+    private final String title;
 
     public StructureIdentifier(String pdbId,
                                String ligandId,
                                String chainId,
-                               int residueNumber) {
+                               String residueNumber,
+                               String title) {
         this.pdbId = pdbId;
         this.ligandId = ligandId;
         this.chainId = chainId;
         this.residueNumber = residueNumber;
+        this.title = title;
     }
 
     public String getPdbId() {
@@ -28,7 +31,11 @@ public class StructureIdentifier {
         return chainId;
     }
 
-    public int getResidueNumber() {
+    public String getResidueNumber() {
         return residueNumber;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

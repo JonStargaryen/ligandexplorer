@@ -38,7 +38,7 @@ nav, .query-description, .ligand-description {
     width: 255px;
 }
 
-.structure-description {
+.cluster-description {
     width: 540px;
 }
 
@@ -52,16 +52,16 @@ nav, .query-description, .ligand-description {
     width: 255px;
 }
 
-.structure-description .ngl-instance {
+.cluster-description .ngl-instance {
     height: 540px;
     width: 540px;
 }
 
-.ligand-description, .structure-description {
+.ligand-description, .cluster-description {
     background-color: #ffffff;
 }
 
-.ligand-description > h1, .structure-description > h1 {
+.ligand-description > h1, .cluster-description > h1 {
     color: #1a1c21;
 }
 
