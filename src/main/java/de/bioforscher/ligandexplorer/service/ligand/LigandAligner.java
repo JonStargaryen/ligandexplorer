@@ -1,10 +1,12 @@
 package de.bioforscher.ligandexplorer.service.ligand;
 
-import de.bioforscher.jstructure.mathematics.Transformation;
-import de.bioforscher.jstructure.model.structure.Group;
+import de.bioforscher.ligandexplorer.model.BindingSite;
 
 import java.util.List;
 
+/**
+ * Align binding sites in their ligands.
+ */
 public interface LigandAligner {
-    List<Transformation> alignLigands(List<Group> ligands);
+    void alignBindingSites(List<BindingSite> bindingSites);
 }

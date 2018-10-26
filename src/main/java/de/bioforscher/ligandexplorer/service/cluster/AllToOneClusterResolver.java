@@ -1,87 +1,75 @@
 package de.bioforscher.ligandexplorer.service.cluster;
 
-import de.bioforscher.jstructure.feature.interaction.PLIPLigandAnnotator;
 import de.bioforscher.jstructure.feature.plip.ProteinLigandInteractionProfiler;
-import de.bioforscher.jstructure.feature.plip.model.Interaction;
 import de.bioforscher.jstructure.feature.plip.model.InteractionContainer;
-import de.bioforscher.jstructure.mathematics.Transformation;
-import de.bioforscher.jstructure.model.structure.Group;
 import de.bioforscher.jstructure.model.structure.Structure;
 import de.bioforscher.jstructure.model.structure.StructureParser;
+import de.bioforscher.ligandexplorer.model.AlignedInteraction;
+import de.bioforscher.ligandexplorer.model.BindingSite;
 import de.bioforscher.ligandexplorer.model.Cluster;
 import de.bioforscher.ligandexplorer.model.StructureIdentifier;
 import de.bioforscher.ligandexplorer.service.ligand.LigandAligner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Component("allToOneClusterResolver")
 public class AllToOneClusterResolver implements ClusterResolver {
+    private static final Logger logger = LoggerFactory.getLogger(AllToOneClusterResolver.class);
     private final LigandAligner ligandAligner;
-    private final PLIPLigandAnnotator plipLigandAnnotator;
 
     @Autowired
     public AllToOneClusterResolver(LigandAligner ligandAligner) {
         this.ligandAligner = ligandAligner;
-        this.plipLigandAnnotator = new PLIPLigandAnnotator();
     }
 
     @Override
     public List<Cluster> getClusters(String ligandName, List<String> pdbIds) {
+        List<BindingSite> bindingSites = pdbIds.stream()
+                .limit(3)
+                .flatMap(pdbId -> {
+                    Structure structure = StructureParser.fromPdbId(pdbId).parse();
+                    InteractionContainer interactionContainer = ProteinLigandInteractionProfiler.getInstance()
+                            .annotateLigandInteractions(structure);
+
+                    return structure.select()
+                            .groupName(ligandName)
+                            .asFilteredGroups()
+                            .map(ligand -> {
+                                StructureIdentifier structureIdentifier = new StructureIdentifier(structure.getProteinIdentifier().getPdbId(),
+                                        ligandName,
+                                        ligand.getParentChain().getChainIdentifier().getChainId(),
+                                        ligand.getResidueIdentifier().toString(),
+                                        structure.getTitle());
+                                return new BindingSite(structureIdentifier,
+                                        ligand,
+                                        interactionContainer);
+                            });
+                })
+                .collect(Collectors.toList());
+
+        ligandAligner.alignBindingSites(bindingSites);
+
         List<Cluster> clusters = new ArrayList<>();
-
-        StringJoiner pdbRepresentation = new StringJoiner(System.lineSeparator());
-        List<StructureIdentifier> structureIdentifiers = new ArrayList<>();
-        List<Group> ligands = new ArrayList<>();
-
-        pdbIds.forEach(pdbId -> {
-                Structure structure = StructureParser.fromPdbId(pdbId).parse();
-                InteractionContainer container = ProteinLigandInteractionProfiler.getInstance().annotateLigandInteractions(structure);
-
-                container.getInteractions()
-                        .stream()
-                        .map(interaction -> interaction.getClass().getSimpleName() + " " +
-                                interaction.getInteractingAtoms1().get(0).getParentGroup() + " " +
-                                interaction.getInteractingAtoms2().get(0).getParentGroup())
-                        .forEach(System.out::println);
-
-                structure.select()
-                        .ligands()
-                        .groupName(ligandName)
-                        .asFilteredGroups()
-                        .forEach(ligand -> {
-                            structureIdentifiers.add(new StructureIdentifier(pdbId,
-                                    ligandName,
-                                    ligand.getParentChain().getChainIdentifier().getChainId(),
-                                    ligand.getResidueIdentifier().toString(),
-                                    structure.getTitle()));
-
-                            ligands.add(ligand);
-
-                            String ligandChainId = ligand.getParentChain().getChainIdentifier().getChainId();
-                            String ligandResidueNumber = ligand.getResidueIdentifier().toString();
-                            List<Interaction> filteredInteractions = container.getSubsetOfInteractions(ligand).getInteractions();
-                            System.out.println(pdbId + " - " + ligandChainId + " - " + ligandResidueNumber + " - " + filteredInteractions.size());
-                        });
-        });
-
-        List<Transformation> transformations = ligandAligner.alignLigands(ligands);
-        for(int i = 0; i < ligands.size(); i++) {
-            Group ligand = ligands.get(i);
-            ligand.calculate().transform(transformations.get(i));
-            pdbRepresentation.add(ligand.getPdbRepresentation());
-        }
-
-//        ligands.stream()
-//                .map(group -> group.getFeature(PLIPInteractionContainer.class).getInteractionsFor(group))
-//                .forEach(System.out::println);
-
+        //TODO shitty code: this alignment must happen first: otherwise alignment of the ligand will cause interaction centroids to be shifted as well
+        List<AlignedInteraction> alignedInteractions = bindingSites.stream()
+                .map(BindingSite::getAlignedInteractions)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         clusters.add(new Cluster("1",
-                structureIdentifiers,
-                pdbRepresentation.toString()));
+                bindingSites.stream()
+                        .map(BindingSite::getStructureIdentifier)
+                        .collect(Collectors.toList()),
+                bindingSites.stream()
+                        .map(BindingSite::getAlignedPdbRepresentation)
+                        .collect(Collectors.joining(System.lineSeparator())),
+                alignedInteractions));
         return clusters;
     }
 }

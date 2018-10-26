@@ -7,31 +7,31 @@ import de.bioforscher.jstructure.model.structure.Atom;
 import de.bioforscher.jstructure.model.structure.Group;
 import de.bioforscher.jstructure.model.structure.StructureCollectors;
 import de.bioforscher.jstructure.model.structure.container.AtomContainer;
+import de.bioforscher.ligandexplorer.model.BindingSite;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.SingularValueDecomposition;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class NaiveLigandAligner implements LigandAligner {
     @Override
-    public List<Transformation> alignLigands(List<Group> ligands) {
-        List<Transformation> transformations = new ArrayList<>();
-        Group reference = ligands.get(0);
-        transformations.add(new Transformation(Transformation.NEUTRAL_TRANSLATION, Transformation.NEUTRAL_ROTATION));
+    public void alignBindingSites(List<BindingSite> bindingSites) {
+        BindingSite referenceBindingSite = bindingSites.get(0);
+        Group referenceGroup = referenceBindingSite.getOriginalLigand();
+        referenceBindingSite.setTransformation(new Transformation(Transformation.NEUTRAL_TRANSLATION, Transformation.NEUTRAL_ROTATION));
 
-        for(int i = 1; i < ligands.size(); i++) {
-            Group query = ligands.get(i);
+        for(int i = 1; i < bindingSites.size(); i++) {
+            BindingSite queryBindingSite = bindingSites.get(i);
+            Group queryGroup = queryBindingSite.getOriginalLigand();
 
             // determine mapping
-            List<Pair<Atom, Atom>> atomMapping = determineSharedAtoms(reference, query);
+            List<Pair<Atom, Atom>> atomMapping = determineSharedAtoms(referenceGroup, queryGroup);
             AtomContainer referenceSelectedAtoms = atomMapping.stream()
                     .map(Pair::getLeft)
                     .collect(StructureCollectors.toIsolatedStructure());
@@ -67,28 +67,9 @@ public class NaiveLigandAligner implements LigandAligner {
                             .multiply(rotation))
                     .getValue();
 
-            // transform 2nd atom select - employ neutral translation (3D vector of zeros), because the atoms are
-            // already centered and calculate RMSD
-            querySelectedAtoms.calculate().transform(new Transformation(rotation));
-            double rmsd = calculateRmsd(referenceSelectedAtoms, querySelectedAtoms);
-
             Transformation transformation = new Transformation(translation, rotation);
-            // superimpose query onto reference
-//            querySelectedAtoms.calculate().transform(transformation);
-
-            // align original structure
-//            System.out.println("original:");
-//            System.out.println(query.getPdbRepresentation());
-//            query.getParentStructure().calculate().transform(transformation);
-//            System.out.println("aligned:");
-//            System.out.println(query.getPdbRepresentation());
-
-//            System.out.println(rmsd);
-
-            transformations.add(transformation);
+            queryBindingSite.setTransformation(transformation);
         }
-
-        return transformations;
     }
 
     /**
@@ -122,29 +103,13 @@ public class NaiveLigandAligner implements LigandAligner {
      * @param atomName the atom name to retrieve
      * @return the desired atom
      */
-    static Atom selectAtom(Group group, String atomName) {
+    private Atom selectAtom(Group group, String atomName) {
         return group.atoms()
                 .filter(atom -> atomName.equals(atom.getName()))
                 //TODO test case for multiple atom names within the same group
                 .findFirst()
                 // presence is guaranteed by looking at shared atom names
                 .get();
-    }
-
-    /**
-     * Computes the root-mean square deviation between 2 sets of atoms.
-     * @param reference container 1 - must arrange atoms in the exact same manner
-     * @param query container 2 - must arrange atoms in the exact same manner
-     * @return the RMSD value of the alignment
-     * @throws IllegalArgumentException if no matching atom pairs were provided
-     */
-    private double calculateRmsd(AtomContainer reference, AtomContainer query) {
-        double msd = IntStream.range(0, reference.getAtoms().size())
-                .mapToDouble(atomIndex -> LinearAlgebra.on(reference.getAtoms().get(atomIndex))
-                        .distanceFast(query.getAtoms().get(atomIndex)))
-                .average()
-                .orElseThrow(() -> new IllegalArgumentException("cannot calculate rmsd for empty or non-intersecting containers"));
-        return Math.sqrt(msd);
     }
 
     /**

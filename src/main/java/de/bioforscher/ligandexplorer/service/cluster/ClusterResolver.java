@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Compose clusters for a set of binding sites.
+ */
 public interface ClusterResolver {
     default List<Cluster> getClusters(String ligandName,
-                              String pdbIdString) {
+                                      String pdbIdString) {
         return getClusters(ligandName, isolatePdbIds(pdbIdString));
     }
 

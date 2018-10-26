@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Component("allToIndividualClusterResolver")
 public class AllToIndividualClusterResolver implements ClusterResolver {
     @Override
@@ -17,6 +18,7 @@ public class AllToIndividualClusterResolver implements ClusterResolver {
         List<Cluster> clusters = new ArrayList<>();
         for(String pdbId : pdbIds) {
             Structure structure = StructureParser.fromPdbId(pdbId).parse();
+
             String pdbRepresentation = structure.select()
                     .ligands()
                     .groupName(ligandName)
@@ -36,7 +38,9 @@ public class AllToIndividualClusterResolver implements ClusterResolver {
                     .collect(Collectors.toList());
             clusters.add(new Cluster(String.valueOf(clusters.size() + 1),
                     structureIdentifiers,
-                    pdbRepresentation));
+                    pdbRepresentation,
+                    //TODO impl
+                    null));
         }
         return clusters;
     }

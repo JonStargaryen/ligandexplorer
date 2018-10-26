@@ -1,5 +1,7 @@
 package de.bioforscher.ligandexplorer.service.ligand;
 
+import de.bioforscher.jstructure.model.structure.Structure;
+import de.bioforscher.jstructure.model.structure.StructureParser;
 import de.bioforscher.ligandexplorer.model.Ligand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Fetch ligand information from the PDB. Provide ligand name (three-letter-code), retrieve general ligand information
+ * and the structures it is present in.
+ */
 @Component("pdbLigandResolver")
 public class PDBLigandResolver implements LigandResolver {
     private static final Logger logger = LoggerFactory.getLogger(PDBLigandResolver.class);
@@ -62,22 +68,8 @@ public class PDBLigandResolver implements LigandResolver {
         String ligandStructureUrl = String.format(PDB_LIGAND_STRUCTURE_URL, ligandName);
         try {
             InputStream inputStream = new URL(ligandStructureUrl).openStream();
-            try {
-                try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
-                    try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
-                        pdbRepresentation = bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
-                    }
-                }
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            } finally {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    logger.warn("failed to close InputStream while parsing",
-                            e);
-                }
-            }
+            Structure ligand = StructureParser.fromInputStream(inputStream).skipHydrogenAtoms(true).parse();
+            pdbRepresentation = ligand.getPdbRepresentation();
         } catch (IOException e) {
             logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
         }

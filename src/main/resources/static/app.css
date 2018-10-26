@@ -146,3 +146,27 @@ input, input:focus {
     letter-spacing: 1px;
     outline: none 0;
 }
+
+.table {
+    margin: 0 -5px;
+    display: table;
+    width: 100%;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-row > div {
+    display: table-cell;
+    padding: 5px;
+}
+
+.table-head {
+    font-weight: bold;
+}
+
+.table-head, .table-row:nth-child(odd) {
+    background-color: #efefef;
+}
+

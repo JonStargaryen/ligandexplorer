@@ -17,7 +17,7 @@ public class NaiveQueryResolver implements QueryResolver {
     private final LigandResolver ligandResolver;
 
     @Autowired
-    public NaiveQueryResolver(@Qualifier("pdbLigandResolver")LigandResolver ligandResolver) {
+    public NaiveQueryResolver(@Qualifier("pdbLigandResolver") LigandResolver ligandResolver) {
         this.ligandResolver = ligandResolver;
     }
 

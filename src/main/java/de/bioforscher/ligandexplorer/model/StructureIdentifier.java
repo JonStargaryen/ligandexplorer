@@ -10,6 +10,13 @@ public class StructureIdentifier {
     public StructureIdentifier(String pdbId,
                                String ligandId,
                                String chainId,
+                               String residueNumber) {
+        this(pdbId, ligandId, chainId, residueNumber, "");
+    }
+
+    public StructureIdentifier(String pdbId,
+                               String ligandId,
+                               String chainId,
                                String residueNumber,
                                String title) {
         this.pdbId = pdbId;
@@ -37,5 +44,14 @@ public class StructureIdentifier {
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public String toString() {
+        return "StructureIdentifier{" +
+                "pdbId='" + pdbId + '\'' +
+                ", chainId='" + chainId + '\'' +
+                ", residueNumber='" + residueNumber + '\'' +
+                '}';
     }
 }

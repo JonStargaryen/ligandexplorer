@@ -58,9 +58,22 @@
             <div class="content-panel cluster-description" data-ng-repeat="cluster in clusters" data-ng-controller="ClusterController">
                 <div class="ngl-instance" id="ngl-cluster-{{::cluster.id}}"></div>
                 <div class="text">
-                    <h1>Cluster #{{::cluster.id}}</h1>
+                    <h1>Cluster #{{cluster.id}}</h1>
 
-                    <div>{{::cluster.structureIdentifiers}}</div>
+                    <div class="table">
+                        <div class="table-head table-row">
+                            <div>PDB-ID</div>
+                            <div>chain-ID</div>
+                            <div>ligand</div>
+                            <div>residue number</div>
+                        </div>
+                        <div class="table-row" data-ng-repeat="si in ::cluster.structureIdentifiers">
+                            <div>{{si.pdbId}}</div>
+                            <div>{{si.chainId}}</div>
+                            <div>{{si.ligandId}}</div>
+                            <div>{{si.residueNumber}}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
