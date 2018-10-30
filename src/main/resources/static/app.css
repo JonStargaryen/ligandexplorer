@@ -9,17 +9,27 @@ html, body, div, a, form {
 }
 
 #content {
-    margin: 0 auto;
-    width: 95%;
+    min-width: 1200px;
     font-family: 'PT Sans', sans-serif;
     font-size: 14px;
     line-height: 1.5;
     word-wrap: break-word;
+    text-align: center;
+}
+
+.column {
+    display: inline-block;
+    vertical-align: top;
+    margin: 30px 15px;
+    text-align: left;
+}
+
+.column > div+div, .column nav+div {
+    margin-top: 30px;
 }
 
 .content-panel {
     border-radius: 6px;
-    margin: 30px 0;
     overflow: hidden;
     border-collapse: separate;
     box-sizing: border-box;
@@ -29,12 +39,12 @@ html, body, div, a, form {
     padding: 1em 20px 1.5em;
 }
 
-nav > div, nav > ul > li, .query-description > div {
+nav > div, nav > ul > li, .query-description > div, .controls > div {
     background-color: #1a1b20;
     color: #91949d;
 }
 
-nav, .query-description, .ligand-description {
+nav, .query-description, .ligand-description, .controls {
     width: 255px;
 }
 
@@ -61,7 +71,7 @@ nav, .query-description, .ligand-description {
     background-color: #ffffff;
 }
 
-.ligand-description > h1, .cluster-description > h1 {
+.ligand-description > h1, .cluster-description > h1, .controls > h1 {
     color: #1a1c21;
 }
 
@@ -101,11 +111,19 @@ li:hover, li.active {
 h1 {
     font-size: 18px;
     font-weight: bold;
+    margin: 4px 0 14px 0;
+}
+
+a {
+    color: #ffffff;
 }
 
 a, a:active, a:hover, a:visited {
-    color: #ffffff;
     text-decoration: none;
+}
+
+a:active, a:hover, a:visited {
+    color: inherit;
 }
 
 .highlight-color {
@@ -141,14 +159,13 @@ input, input:focus {
     border: 0;
     font-size: 12px;
     font-weight: 700;
-    font-family: 'PT Sans';
+    font-family: inherit;
     text-transform: uppercase;
     letter-spacing: 1px;
     outline: none 0;
 }
 
 .table {
-    margin: 0 -5px;
     display: table;
     width: 100%;
 }
@@ -170,3 +187,10 @@ input, input:focus {
     background-color: #efefef;
 }
 
+.list > span+span::before {
+    content: ' ';
+}
+
+div[data-simplebar] {
+    max-height: 190px;
+}

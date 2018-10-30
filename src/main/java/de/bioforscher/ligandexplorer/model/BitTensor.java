@@ -50,6 +50,12 @@ public class BitTensor {
         return entries.remove(key);
     }
 
+    @Override
+    public String toString() {
+        return entries.stream()
+                .collect(Collectors.joining(System.lineSeparator()));
+    }
+
     private static String toString(int... indicies) {
         return IntStream.of(indicies)
                 .mapToObj(String::valueOf)
@@ -64,7 +70,30 @@ public class BitTensor {
     }
 
     public static double computeDistance(BitTensor bitTensor1, BitTensor bitTensor2) {
-        return computeJaccardIndex(bitTensor1, bitTensor2);
+        return computeJaccardDistanceWithoutHydrophobic(bitTensor1, bitTensor2);
+    }
+
+    private static double computeJaccardDistanceWithoutHydrophobic(BitTensor bitTensor1, BitTensor bitTensor2) {
+        checkForCompatibleDimensions(bitTensor1, bitTensor2);
+
+        List<String> filteredEntries1 = bitTensor1.entries.stream()
+                .filter(string -> !string.split(",")[3].equals("2"))
+                .collect(Collectors.toList());
+        List<String> filteredEntries2 = bitTensor2.entries.stream()
+                .filter(string -> !string.split(",")[3].equals("2"))
+                .collect(Collectors.toList());
+        int size1 = filteredEntries1.size();
+        int size2 = filteredEntries2.size();
+        double intersectionSize = SetOperations.createIntersectionSet(filteredEntries1.stream()
+                .map(string -> string.split(","))
+                .map(split -> split[0] + "," + split[1] + "," + split[2])
+                .collect(Collectors.toList()), filteredEntries2.stream()
+                .map(string -> string.split(","))
+                .map(split -> split[0] + "," + split[1] + "," + split[2])
+                .collect(Collectors.toList()))
+                .size();
+
+        return 1 - intersectionSize / (size1 + size2 - intersectionSize);
     }
 
     private static double computeJaccardIndex(BitTensor bitTensor1, BitTensor bitTensor2) {
@@ -72,9 +101,34 @@ public class BitTensor {
 
         int size1 = bitTensor1.entries.size();
         int size2 = bitTensor2.entries.size();
-        double unionSize = SetOperations.createUnionSet(bitTensor1.entries, bitTensor2.entries).size();
+        double intersectionSize = SetOperations.createIntersectionSet(bitTensor1.entries, bitTensor2.entries).size();
 
-        return unionSize / (size1 + size2 + unionSize);
+        return intersectionSize / (size1 + size2 - intersectionSize);
+    }
+
+    private static double computeJaccardDistance(BitTensor bitTensor1, BitTensor bitTensor2) {
+        return 1 - computeJaccardIndex(bitTensor1, bitTensor2);
+    }
+
+    private static double computeJaccardDistanceByIgnoringInteractionType(BitTensor bitTensor1, BitTensor bitTensor2) {
+        return 1 - computeJaccardIndexByIgnoringInteractionType(bitTensor1, bitTensor2);
+    }
+
+    private static double computeJaccardIndexByIgnoringInteractionType(BitTensor bitTensor1, BitTensor bitTensor2) {
+        checkForCompatibleDimensions(bitTensor1, bitTensor2);
+
+        int size1 = bitTensor1.entries.size();
+        int size2 = bitTensor2.entries.size();
+        double intersectionSize = SetOperations.createIntersectionSet(bitTensor1.entries.stream()
+                .map(string -> string.split(","))
+                .map(split -> split[0] + "," + split[1] + "," + split[2])
+                .collect(Collectors.toList()), bitTensor2.entries.stream()
+                .map(string -> string.split(","))
+                .map(split -> split[0] + "," + split[1] + "," + split[2])
+                .collect(Collectors.toList()))
+                .size();
+
+        return intersectionSize / (size1 + size2 - intersectionSize);
     }
 
     private static void checkForCompatibleDimensions(BitTensor bitTensor1, BitTensor bitTensor2) {

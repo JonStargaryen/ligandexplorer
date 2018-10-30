@@ -1,4 +1,4 @@
-package de.bioforscher.ligandexplorer.service.ligand;
+package de.bioforscher.ligandexplorer.service.ligand.resolve;
 
 import de.bioforscher.jstructure.model.structure.Structure;
 import de.bioforscher.jstructure.model.structure.StructureParser;
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  * Fetch ligand information from the PDB. Provide ligand name (three-letter-code), retrieve general ligand information
  * and the structures it is present in.
  */
-@Component("pdbLigandResolver")
-public class PDBLigandResolver implements LigandResolver {
-    private static final Logger logger = LoggerFactory.getLogger(PDBLigandResolver.class);
+@Component("ligandResolverImpl")
+public class LigandResolverImpl implements LigandResolver {
+    private static final Logger logger = LoggerFactory.getLogger(LigandResolverImpl.class);
 
     private static final String PDB_LIGAND_DESCRIPTION_URL = "https://files.rcsb.org/ligands/view/%s.cif";
     private static final String PDB_LIGAND_STRUCTURE_URL = "https://files.rcsb.org/ligands/view/%s_ideal.pdb";
@@ -97,14 +97,14 @@ public class PDBLigandResolver implements LigandResolver {
 
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                pdbIds.add(line);
+                pdbIds.add(line.toLowerCase());
             }
             bufferedReader.close();
         } catch (IOException e) {
             logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
         }
 
-        logger.info("ligand {} is present in {} structures:\n{}",
+        logger.info("ligand {} is present in {} structures: {}",
                 ligandName,
                 pdbIds.size(),
                 pdbIds);

@@ -6,85 +6,109 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <base href="/">
 
-        <title>ligand explorer</title>
+        <title>Ligand Explorer</title>
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic" media="screen" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
 
         <link rel="stylesheet" href="app.css">
     </head>
     <body data-ng-app="le" data-ng-controller="ViewController as view">
         <div id="content">
-            <nav class="content-panel">
-                <div class="text">
-                    <h1 class="neutral-color">ligand explorer</h1>
+            <div class="column">
+                <nav class="content-panel">
+                    <div class="text">
+                        <h1 class="neutral-color">Ligand Explorer</h1>
 
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                </div>
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                    </div>
 
-                <ul id="navigation">
-                    <li>
-                        <a href="#" id="home"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
-                    </li>
-                    <li>
-                        <span id="search"><i class="fa fa-search" aria-hidden="true"></i>
-                            <form action="#" id="search-form" method="get">
-                                <input id="search-field" name="query" onblur="if (this.value === '') {this.value = 'Search';}" onfocus="if (this.value === 'Search') {this.value = '';}" type="text" value="Search">
-                            </form>
-                        </span>
-                    </li>
-                </ul>
-            </nav>
+                    <ul id="navigation">
+                        <li>
+                            <a href="#" id="home"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
+                        </li>
+                        <li>
+                            <span id="search"><i class="fa fa-search" aria-hidden="true"></i>
+                                <form action="#" id="search-form" method="get">
+                                    <input id="search-field" name="query" onblur="if (this.value === '') {this.value = 'Search';}" onfocus="if (this.value === 'Search') {this.value = '';}" type="text" value="Search">
+                                </form>
+                            </span>
+                        </li>
+                    </ul>
+                </nav>
 
-            <div class="content-panel query-description">
-                <div class="text">
-                    <h1 class="neutral-color">Query</h1>
+                <div class="content-panel query-description">
+                    <div class="text">
+                        <h1 class="neutral-color">Query</h1>
 
-                    Query for ligands with {{::query.queryType}} '{{::query.query}}'.
-                    <span class="highlight-color" title="{{::query.ligands}}">{{::query.numberOfLigands}} ligands</span> matched.
-                </div>
-            </div>
-
-            <div class="content-panel ligand-description" data-ng-repeat="ligand in ::query.ligands" data-ng-controller="LigandController">
-                <div class="ngl-instance" id="ngl-{{::ligand.id}}"></div>
-                <div class="text">
-                    <h1>{{::ligand.id}}</h1>
-
-                    <div>{{::ligand.name}}</div>
-                    <div>Present in <span class="highlight-color" title="{{::ligand.pdbIds}}">{{::ligand.numberOfStructures}} structures</span>.</div>
+                        Query for ligands with {{::query.queryType}} '{{::query.query}}'.
+                        <span class="highlight-color" title="{{::query.ligands}}">{{::query.numberOfLigands}} ligands</span> matched.
+                    </div>
                 </div>
             </div>
 
-            <div class="content-panel cluster-description" data-ng-repeat="cluster in clusters" data-ng-controller="ClusterController">
-                <div class="ngl-instance" id="ngl-cluster-{{::cluster.id}}"></div>
-                <div class="text">
-                    <h1>Cluster #{{cluster.id}}</h1>
+            <div class="column">
+                <div class="content-panel controls">
+                    <div class="text">
+                        <h1 class="neutral-color">Controls</h1>
 
-                    <div class="table">
-                        <div class="table-head table-row">
-                            <div>PDB-ID</div>
-                            <div>chain-ID</div>
-                            <div>ligand</div>
-                            <div>residue number</div>
-                        </div>
-                        <div class="table-row" data-ng-repeat="si in ::cluster.structureIdentifiers">
-                            <div>{{si.pdbId}}</div>
-                            <div>{{si.chainId}}</div>
-                            <div>{{si.ligandId}}</div>
-                            <div>{{si.residueNumber}}</div>
+                        bla bla bla
+                    </div>
+                </div>
+
+                <div class="content-panel ligand-description" data-ng-repeat="ligand in ::query.ligands" data-ng-controller="LigandController">
+                    <div class="ngl-instance" id="ngl-{{::ligand.id}}"></div>
+                    <div class="text">
+                        <h1>{{::ligand.id}}</h1>
+
+                        <p>name: {{::ligand.name | lowercase}}</p>
+
+                        <p>present in {{ligand.numberOfStructures}} structures:
+                            <span class="list">
+                                <span data-ng-repeat="pdbId in ::ligand.pdbIds">
+                                    <a class="highlight-color" href="https://www.rcsb.org/structure/{{::pdbId}}">{{::pdbId}}</a>
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="content-panel cluster-description" data-ng-repeat="cluster in clusters" data-ng-controller="ClusterController">
+                    <div class="ngl-instance" id="ngl-cluster-{{::cluster.id}}"></div>
+                    <div class="text">
+                        <h1>Cluster #{{cluster.id}}</h1>
+
+                        <div data-simplebar>
+                            <div class="table">
+                                <div class="table-head table-row">
+                                    <div>PDB-ID</div>
+                                    <div>chain-ID</div>
+                                    <div>ligand</div>
+                                    <div>residue number</div>
+                                </div>
+                                <div class="table-row" data-ng-repeat="si in ::cluster.structureIdentifiers">
+                                    <div>{{si.pdbId}}</div>
+                                    <div>{{si.chainId}}</div>
+                                    <div>{{si.ligandId}}</div>
+                                    <div>{{si.residueNumber}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div></div>
-
         <script src="//code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-route.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script src="app.js"></script>
+        <script src="https://unpkg.com/simplebar@latest/dist/simplebar.js"></script>
+
         <script src="ngl.js"></script>
+        <script src="app.js"></script>
     </body>
 </html>

@@ -1,4 +1,4 @@
-package de.bioforscher.ligandexplorer.service.ligand;
+package de.bioforscher.ligandexplorer.service.ligand.align;
 
 import de.bioforscher.ligandexplorer.model.BindingSite;
 

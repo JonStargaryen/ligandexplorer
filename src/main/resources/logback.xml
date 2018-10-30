@@ -1,0 +1,27 @@
+<configuration>
+    <!-- LOGBACK logging config file, see http://logback.qos.ch/manual/joran.html -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout -->
+            <Pattern>%-5level %msg [%logger{16} %d{HH:mm:ss}]%n</Pattern>
+        </encoder>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <logger name="de.bioforscher.ligandexplorer" level="DEBUG" />
+    <logger name="de.bioforscher.jstructure" level="INFO" />
+    <logger name="org.apache" level="WARN" />
+    <logger name="org.apache.axis2" level="WARN" />
+    <logger name="org.apache.axiom" level="WARN" />
+    <logger name="httpclient.wire" level="WARN" />
+    <logger name="org.reflections" level="OFF" />
+    <logger name="org.biojava" level="OFF" />
+    <logger name="de.bioforscher.singa" level="INFO" />
+
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.jboss" level="INFO" />
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="org.mongodb.driver.cluster" level="INFO" />
+</configuration>

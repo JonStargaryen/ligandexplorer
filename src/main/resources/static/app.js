@@ -10,32 +10,36 @@
             $scope.viewers = [];
 
             var rawQuery = $routeParams.query;
-            var exampleQuery = 'EST';
+            // var exampleQuery = 'EST';
             // var exampleQuery = 'H2U';
+            var exampleQuery = 'AMO';
+            // var exampleQuery = 'ATP';
             console.log(rawQuery);
             var query = rawQuery ? rawQuery : exampleQuery;
             console.log('fetching ' + query);
 
+            // resolve ligand query
             ViewService.handleLigandQuery(query).then(function(response) {
                 $scope.query = response.data;
-                // console.log($scope.query);
+                console.log($scope.query);
 
                 $scope.query.ligands.forEach(function(ligand) {
+                    // cluster binding sites
                     ViewService.handleStructureQuery(ligand.id, ligand.pdbIds.join('')).then(function(response) {
-                        response.data.forEach(function(cluster) {
+                        response.data.forEach(function (cluster) {
+                            console.log(cluster);
+
                             $scope.clusters.push({
-                                id : cluster.id,
-                                structureIdentifiers : cluster.structureIdentifiers,
-                                pdbRepresentation : cluster.pdbRepresentation,
-                                interactions : cluster.alignedInteractions
+                                id: cluster.id,
+                                structureIdentifiers: cluster.structureIdentifiers,
+                                pdbRepresentation: cluster.pdbRepresentation,
+                                interactions: cluster.alignedInteractions
                             })
-                        }, function(response) {
-                            console.log(response);
-                        })
+                        });
+                    }, function(response) {
+                        console.log(response);
                     })
                 });
-
-                // console.log($scope.clusters);
             }, function(response) {
                 console.log(response);
             });
@@ -45,7 +49,7 @@
         //TODO hide hydrogen atoms in NGL instance - how?
         $timeout(function() {
             var stage = new NGL.Stage('ngl-' + $scope.ligand.id, { backgroundColor : '#1a1b20' });
-            stage.mouseControls.add("")
+            // stage.mouseControls.add("")
             var stringBlob = new Blob([$scope.ligand.pdbRepresentation], { type : 'text/plain'});
             stage.loadFile(stringBlob, { ext : 'pdb'})
                 .then(function (component) {
@@ -63,6 +67,7 @@
 
     MODULE.controller('ClusterController', ['$scope', '$timeout', function($scope, $timeout) {
         $timeout(function() {
+            //TODO performance issues for many objects rendered (happens for alignment of 30 ligands)
             var stage = new NGL.Stage('ngl-cluster-' + $scope.cluster.id, { backgroundColor : '#1a1b20' });
             var stringBlob = new Blob([$scope.cluster.pdbRepresentation], { type : 'text/plain'});
 

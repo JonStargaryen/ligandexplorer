@@ -1,7 +1,7 @@
 package de.bioforscher.ligandexplorer.service.query;
 
 import de.bioforscher.ligandexplorer.model.Query;
-import de.bioforscher.ligandexplorer.service.ligand.LigandResolver;
+import de.bioforscher.ligandexplorer.service.ligand.resolve.LigandResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component("naiveQueryResolver")
-public class NaiveQueryResolver implements QueryResolver {
-    private static final Logger logger = LoggerFactory.getLogger(NaiveQueryResolver.class);
+@Component("queryResolverImpl")
+public class QueryResolverImpl implements QueryResolver {
+    private static final Logger logger = LoggerFactory.getLogger(QueryResolverImpl.class);
     private final LigandResolver ligandResolver;
 
     @Autowired
-    public NaiveQueryResolver(@Qualifier("pdbLigandResolver") LigandResolver ligandResolver) {
+    public QueryResolverImpl(@Qualifier("ligandResolverImpl") LigandResolver ligandResolver) {
         this.ligandResolver = ligandResolver;
     }
 

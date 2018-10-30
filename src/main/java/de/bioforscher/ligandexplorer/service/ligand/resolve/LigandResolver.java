@@ -1,4 +1,4 @@
-package de.bioforscher.ligandexplorer.service.ligand;
+package de.bioforscher.ligandexplorer.service.ligand.resolve;
 
 import de.bioforscher.ligandexplorer.model.Ligand;
 

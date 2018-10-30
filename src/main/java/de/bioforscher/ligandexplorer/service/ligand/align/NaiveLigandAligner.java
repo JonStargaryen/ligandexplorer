@@ -1,4 +1,4 @@
-package de.bioforscher.ligandexplorer.service.ligand;
+package de.bioforscher.ligandexplorer.service.ligand.align;
 
 import de.bioforscher.jstructure.mathematics.LinearAlgebra;
 import de.bioforscher.jstructure.mathematics.Pair;
@@ -73,8 +73,8 @@ public class NaiveLigandAligner implements LigandAligner {
     }
 
     /**
-     * Pairs two {@link de.bioforscher.jstructure.model.structure.container.AtomContainer} entities in a comparable
-     * way. Will determine the set of shared atom names and pair matching names of both containers.
+     * Pairs the atoms of two groups in a comparable way. Will determine the set of shared atom names and pair matching
+     * names of both containers.
      * @param referenceGroup the reference container
      * @param queryGroup the query container
      * @return a collection of compatible atom pairs
