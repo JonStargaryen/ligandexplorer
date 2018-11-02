@@ -1,5 +1,6 @@
 package de.bioforscher.ligandexplorer.service.cluster;
 
+import de.bioforscher.jstructure.mathematics.Pair;
 import de.bioforscher.jstructure.mathematics.SetOperations;
 import de.bioforscher.ligandexplorer.model.BindingSite;
 import de.bioforscher.ligandexplorer.model.BitTensor;
@@ -22,17 +23,23 @@ public class ClusterResolverImpl implements ClusterResolver {
         Map<String, Double> distanceMap = new HashMap<>();
 
         // compute binding site distances
+        logger.debug("computing distances");
         alignedBindingSites.forEach(alignedBindingSite -> distanceMap.put(alignedBindingSite.getStructureIdentifier() +
                 "-" + alignedBindingSite.getStructureIdentifier(), 0.0));
-        SetOperations.unorderedPairsOf(alignedBindingSites)
-                .forEach(pair -> {
-                    String key = pair.getLeft().getStructureIdentifier() + "-" + pair.getRight().getStructureIdentifier();
-                    String flippedKey = pair.getRight().getStructureIdentifier() + "-" + pair.getLeft().getStructureIdentifier();
-                    double distance = BitTensor.computeDistance(pair.getLeft().getBitTensor(), pair.getRight().getBitTensor());
-                    distanceMap.put(key, distance);
-                    distanceMap.put(flippedKey, distance);
-                    System.out.println(key + " : " + distance);
-                });
+        List<Pair<BindingSite, BindingSite>> pairs = SetOperations.unorderedPairsOf(alignedBindingSites).collect(Collectors.toList());
+        for (int i = 0; i < pairs.size(); i++) {
+            Pair<BindingSite, BindingSite> pair = pairs.get(i);
+            if(i % 100000 == 0) {
+                logger.debug("{} / {}",
+                        i,
+                        pairs.size());
+            }
+            String key = pair.getLeft().getStructureIdentifier() + "-" + pair.getRight().getStructureIdentifier();
+            String flippedKey = pair.getRight().getStructureIdentifier() + "-" + pair.getLeft().getStructureIdentifier();
+            double distance = BitTensor.computeDistance(pair.getLeft().getBitTensor(), pair.getRight().getBitTensor());
+            distanceMap.put(key, distance);
+            distanceMap.put(flippedKey, distance);
+        }
 
         // determine binding site similarity cutoff
 //        List<Double> filteredValues = distanceMap.values()
@@ -47,9 +54,16 @@ public class ClusterResolverImpl implements ClusterResolver {
         double cutoff = 0.8;
 
         // cluster binding sites by single-linkage clustering
+        logger.debug("clustering binding sites");
         List<List<BindingSite>> rawClusters = new ArrayList<>();
         // determine similar clusters
-        alignedBindingSites.forEach(alignedBindingSite -> {
+        for (int i = 0; i < alignedBindingSites.size(); i++) {
+            if(i % 100000 == 0) {
+                logger.debug("{} / {}",
+                        i,
+                        alignedBindingSites.size());
+            }
+            BindingSite alignedBindingSite = alignedBindingSites.get(i);
             // stores indices of clusters which contain highly similar sequences
             List<Integer> indicesOfSimilarClusters = new ArrayList<>();
 
@@ -62,7 +76,6 @@ public class ClusterResolverImpl implements ClusterResolver {
                     }
 
                     double distance = distanceMap.get(alignedBindingSite.getStructureIdentifier() + "-" + bindingSiteToCheck.getStructureIdentifier());
-                    System.out.println(distance);
                     // binding sites are similar
                     if(distance < cutoff) {
                         clusterContainsSimilarBindingSite = true;
@@ -77,18 +90,15 @@ public class ClusterResolverImpl implements ClusterResolver {
 
             // depending on similar clusters - create new, add to existing, or merge
             if(indicesOfSimilarClusters.isEmpty()) {
-                logger.trace("binding site is unique like you, creating a new cluster");
                 // if no similar sequence clusters were found, we create a new cluster
                 rawClusters.add(Stream.of(alignedBindingSite).collect(Collectors.toList()));
             } else {
                 // the hard case: add to single cluster or merge clusters
                 if(indicesOfSimilarClusters.size() == 1) {
-                    logger.trace("added binding site to cluster: {}", indicesOfSimilarClusters.get(0));
                     // the easy, yet hard case: add sequence to existing cluster
                     rawClusters.get(indicesOfSimilarClusters.get(0)).add(alignedBindingSite);
                 } else {
                     // we need to join/merge existing clusters, because the processed sequence 'connects' them
-                    logger.trace("merging clusters with indices: {}", indicesOfSimilarClusters);
 
                     // add first (a.k.a. new/currently processed sequence)
                     List<BindingSite> mergedCluster = Stream.of(alignedBindingSite).collect(Collectors.toList());
@@ -106,7 +116,7 @@ public class ClusterResolverImpl implements ClusterResolver {
                     rawClusters.add(mergedCluster);
                 }
             }
-        });
+        }
 
         // sort clusters by size
         rawClusters.sort(Comparator.comparingInt((ToIntFunction<List<BindingSite>>) List::size).reversed());
@@ -116,9 +126,6 @@ public class ClusterResolverImpl implements ClusterResolver {
             clusters.add(new Cluster(String.valueOf(i + 1), rawClusters.get(i)));
         }
 
-        logger.info("final clusters are: {}", clusters.stream()
-                .map(Cluster::getStructureIdentifiers)
-                .collect(Collectors.toList()));
         return clusters;
     }
 }

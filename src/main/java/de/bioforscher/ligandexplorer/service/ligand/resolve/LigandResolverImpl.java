@@ -3,8 +3,6 @@ package de.bioforscher.ligandexplorer.service.ligand.resolve;
 import de.bioforscher.jstructure.model.structure.Structure;
 import de.bioforscher.jstructure.model.structure.StructureParser;
 import de.bioforscher.ligandexplorer.model.Ligand;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Component("ligandResolverImpl")
 public class LigandResolverImpl implements LigandResolver {
-    private static final Logger logger = LoggerFactory.getLogger(LigandResolverImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(LigandResolverImpl.class);
 
     private static final String PDB_LIGAND_DESCRIPTION_URL = "https://files.rcsb.org/ligands/view/%s.cif";
     private static final String PDB_LIGAND_STRUCTURE_URL = "https://files.rcsb.org/ligands/view/%s_ideal.pdb";
@@ -55,12 +53,12 @@ public class LigandResolverImpl implements LigandResolver {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.warn("failed to close InputStream while parsing",
-                            e);
+//                    logger.warn("failed to close InputStream while parsing",
+//                            e);
                 }
             }
         } catch (IOException e) {
-            logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
+//            logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
         }
 
         // fetch ligand structure
@@ -71,7 +69,7 @@ public class LigandResolverImpl implements LigandResolver {
             Structure ligand = StructureParser.fromInputStream(inputStream).skipHydrogenAtoms(true).parse();
             pdbRepresentation = ligand.getPdbRepresentation();
         } catch (IOException e) {
-            logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
+//            logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
         }
 
         // fetch structures containing this ligand from PDB
@@ -101,13 +99,8 @@ public class LigandResolverImpl implements LigandResolver {
             }
             bufferedReader.close();
         } catch (IOException e) {
-            logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
+//            logger.warn("failed to load ligand information at " + ligandDescriptionUrl);
         }
-
-        logger.info("ligand {} is present in {} structures: {}",
-                ligandName,
-                pdbIds.size(),
-                pdbIds);
 
         return new Ligand(id,
                 name,

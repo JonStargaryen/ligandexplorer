@@ -70,7 +70,13 @@ public class BitTensor {
     }
 
     public static double computeDistance(BitTensor bitTensor1, BitTensor bitTensor2) {
-        return computeJaccardDistanceWithoutHydrophobic(bitTensor1, bitTensor2);
+        // boilerplate to avoid NaN as result
+        double raw = computeJaccardDistanceWithoutHydrophobic(bitTensor1, bitTensor2);
+        if(Double.isNaN(raw)) {
+            return 1.0;
+        } else {
+            return raw;
+        }
     }
 
     private static double computeJaccardDistanceWithoutHydrophobic(BitTensor bitTensor1, BitTensor bitTensor2) {

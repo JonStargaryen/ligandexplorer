@@ -33,6 +33,7 @@ public class Query {
         return numberOfLigands;
     }
 
+    //TODO add further query types: e.g. SMILES, substructure etc
     public enum QueryType {
         NAME
     }

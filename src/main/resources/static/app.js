@@ -12,8 +12,8 @@
             var rawQuery = $routeParams.query;
             // var exampleQuery = 'EST';
             // var exampleQuery = 'H2U';
-            var exampleQuery = 'AMO';
-            // var exampleQuery = 'ATP';
+            // var exampleQuery = 'AMO';
+            var exampleQuery = 'ALA';
             console.log(rawQuery);
             var query = rawQuery ? rawQuery : exampleQuery;
             console.log('fetching ' + query);

@@ -19,9 +19,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class NaiveLigandAligner implements LigandAligner {
+public class LigandAlignerImpl implements LigandAligner {
     @Override
     public void alignBindingSites(List<BindingSite> bindingSites) {
+        //TODO support for mismatching ligands - find maximal set of alignable atoms
         BindingSite referenceBindingSite = bindingSites.get(0);
         Group referenceGroup = referenceBindingSite.getOriginalLigand();
         referenceBindingSite.setTransformation(new Transformation(Transformation.NEUTRAL_TRANSLATION, Transformation.NEUTRAL_ROTATION));

@@ -96,7 +96,7 @@ public class BindingSite {
                 .collect(Collectors.joining(System.lineSeparator()))*/,
                 alignedBindingSiteResidues.stream()
                         //FIXME remove to propagate binding site residues to front-end
-//                        .limit(0)
+                        .limit(0)
                         .map(Group::getPdbRepresentation)
 //                        .flatMap(Group::atoms)
 //                        .filter(atom -> atom.getElement().isHeavyAtom())
